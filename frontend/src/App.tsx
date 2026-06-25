@@ -1,41 +1,7 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
-import { Timeline } from "./components/Timeline";
+import { Timeline, Article, Cluster } from "./components/Timeline";
 import { Sidebar } from "./components/Sidebar";
 import { PipelineStatus } from "./components/PipelineStatus";
-
-interface Article {
-  id: number;
-  title: string;
-  summary: string;
-  url: string;
-  source: string;
-  author: string | null;
-  published_at: string;
-  hash: string;
-  content?: string;
-  similarity_score?: number;
-}
-
-interface ArticleAssociation {
-  similarity_score: number;
-  article: Article;
-}
-
-interface Cluster {
-  id: number;
-  title: string;
-  description: string | null;
-  representative_keywords: string[];
-  is_active: boolean;
-  created_at: string;
-  updated_at: string;
-  article_associations: ArticleAssociation[];
-  // timeline specific fields
-  label: string;
-  start_time: string;
-  end_time: string;
-  article_count: number;
-}
 
 interface Job {
   id: number;

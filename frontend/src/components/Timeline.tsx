@@ -1,22 +1,24 @@
-import React, { useState, useRef, useEffect, useMemo } from "react";
+import React, { useState, useRef, useMemo } from "react";
 
-interface Article {
+export interface Article {
   id: number;
-  title: str;
+  title: string;
   summary: string;
   url: string;
   source: string;
   author: string | null;
   published_at: string;
   hash: string;
+  content?: string;
+  similarity_score?: number;
 }
 
-interface ArticleAssociation {
+export interface ArticleAssociation {
   similarity_score: number;
   article: Article;
 }
 
-interface Cluster {
+export interface Cluster {
   id: number;
   title: string;
   description: string | null;
@@ -25,9 +27,14 @@ interface Cluster {
   created_at: string;
   updated_at: string;
   article_associations: ArticleAssociation[];
+  // timeline specific fields
+  label?: string;
+  start_time?: string;
+  end_time?: string;
+  article_count?: number;
 }
 
-interface TimelineProps {
+export interface TimelineProps {
   clusters: Cluster[];
   selectedArticleId: number | null;
   onSelectArticle: (article: Article, cluster: Cluster) => void;
@@ -91,7 +98,7 @@ export const Timeline: React.FC<TimelineProps> = ({
     });
 
     if (times.length === 0) {
-      return { min: Date.now() - 86400000 * 3, max: Date.now() }; // 3 days fallback
+      return { min: Date.now() - 86400000 * 3, max: Date.now(), diff: 86400000 * 3 }; // 3 days fallback
     }
 
     const min = Math.min(...times);
@@ -152,7 +159,7 @@ export const Timeline: React.FC<TimelineProps> = ({
   };
 
   // Hover Tooltip Handlers
-  const showTooltip = (article: Article, x: number, y: number, e: React.MouseEvent) => {
+  const showTooltip = (article: Article, e: React.MouseEvent) => {
     if (!containerRef.current) return;
     const rect = containerRef.current.getBoundingClientRect();
     
@@ -360,7 +367,7 @@ export const Timeline: React.FC<TimelineProps> = ({
 
                   {/* 3. Render Nodes */}
                   {sortedAssocs.map((assoc) => {
-                    const { article, similarity_score } = assoc;
+                    const { article } = assoc;
                     const coords = getCoordinates(article.published_at, cIdx);
                     const isActive = article.id === selectedArticleId;
                     
@@ -380,8 +387,8 @@ export const Timeline: React.FC<TimelineProps> = ({
                         }}
                         tabIndex={0}
                         aria-label={`Article: ${article.title}. Source: ${article.source}`}
-                        onMouseEnter={(e) => showTooltip(article, coords.x, coords.y, e)}
-                        onMouseMove={(e) => showTooltip(article, coords.x, coords.y, e)}
+                        onMouseEnter={(e) => showTooltip(article, e)}
+                        onMouseMove={(e) => showTooltip(article, e)}
                         onMouseLeave={hideTooltip}
                       >
                         {/* Interactive outer glowing field on focus/active */}

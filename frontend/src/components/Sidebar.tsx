@@ -1,29 +1,5 @@
 import React from "react";
-
-interface Article {
-  id: number;
-  title: string;
-  summary: string;
-  url: string;
-  source: string;
-  author: string | null;
-  published_at: string;
-  hash: string;
-  content?: string;
-}
-
-interface ArticleAssociation {
-  similarity_score: number;
-  article: Article;
-}
-
-interface Cluster {
-  id: number;
-  title: string;
-  description: string | null;
-  representative_keywords: string[];
-  article_associations: ArticleAssociation[];
-}
+import { Article, Cluster } from "./Timeline";
 
 interface SidebarProps {
   article: Article | null;

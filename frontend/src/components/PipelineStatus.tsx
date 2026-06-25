@@ -3,8 +3,8 @@ import React from "react";
 interface Job {
   id: number;
   status: string;
-  articles_fetched: int;
-  articles_clustered: int;
+  articles_fetched: number;
+  articles_clustered: number;
   error_log: string | null;
   started_at: string;
   completed_at: string | null;
