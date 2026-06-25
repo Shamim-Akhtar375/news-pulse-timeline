@@ -445,7 +445,7 @@ const initDbSchema = () => {
     const workspaceRoot = path.resolve(__dirname, '..');
     const initProcess = spawn('python', [
       '-c',
-      "import sys; sys.path.append('.'); from backend.app.database import engine, Base; Base.metadata.create_all(bind=engine)"
+      "import sys; sys.path.append('.'); from backend.app.database import engine, Base; import backend.app.models; Base.metadata.create_all(bind=engine)"
     ], { cwd: workspaceRoot });
 
     let stderr = '';
