@@ -86,7 +86,7 @@ app.get('/clusters', async (req, res) => {
     res.json(clusters);
   } catch (error) {
     console.error('Error fetching clusters:', error);
-    res.status(500).json({ error: 'Failed to retrieve clusters' });
+    res.status(500).json({ error: 'Failed to retrieve clusters', details: error.message, stack: error.stack });
   } finally {
     if (db) await db.close();
   }
@@ -388,9 +388,53 @@ app.get('/ingest/status/:jobId', async (req, res) => {
     });
   } catch (error) {
     console.error(`Error checking status for Job #${jobId}:`, error);
-    res.status(500).json({ error: 'Failed to retrieve job status' });
+    res.status(500).json({ error: 'Failed to retrieve job status', details: error.message });
   } finally {
     if (db) await db.close();
+  }
+});
+
+app.get('/debug-db', async (req, res) => {
+  try {
+    const fs = await import('fs');
+    const path = await import('path');
+    const dbExists = fs.existsSync(dbPath);
+    const resolvedPath = path.resolve(dbPath);
+    
+    let dbStatus = "not connected";
+    let dbError = null;
+    let queryResult = null;
+    
+    if (dbExists) {
+      let db;
+      try {
+        db = await getDb();
+        dbStatus = "connected";
+        queryResult = await db.get("SELECT name FROM sqlite_master WHERE type='table'");
+      } catch (err) {
+        dbStatus = "failed to connect";
+        dbError = { message: err.message, stack: err.stack };
+      } finally {
+        if (db) await db.close();
+      }
+    }
+    
+    res.json({
+      dbPath,
+      resolvedPath,
+      dbExists,
+      dbStatus,
+      dbError,
+      queryResult,
+      env: {
+        DATABASE_PATH: process.env.DATABASE_PATH,
+        DATABASE_URL: process.env.DATABASE_URL,
+        PORT: process.env.PORT,
+        NODE_ENV: process.env.NODE_ENV
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message, stack: error.stack });
   }
 });
 
