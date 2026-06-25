@@ -438,7 +438,35 @@ app.get('/debug-db', async (req, res) => {
   }
 });
 
-// Start listening
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`Node.js Express backend server listening on http://0.0.0.0:${PORT}`);
+// Initialize database schema using python SQLAlchemy models
+const initDbSchema = () => {
+  return new Promise((resolve) => {
+    console.log("Initializing database schema...");
+    const workspaceRoot = path.resolve(__dirname, '..');
+    const initProcess = spawn('python', [
+      '-c',
+      "import sys; sys.path.append('.'); from backend.app.database import engine, Base; Base.metadata.create_all(bind=engine)"
+    ], { cwd: workspaceRoot });
+
+    let stderr = '';
+    initProcess.stderr.on('data', (data) => {
+      stderr += data.toString();
+    });
+
+    initProcess.on('close', (code) => {
+      if (code === 0) {
+        console.log("Database schema initialized successfully.");
+      } else {
+        console.error(`Database schema initialization failed with exit code ${code}. Error: ${stderr}`);
+      }
+      resolve();
+    });
+  });
+};
+
+// Start listening after DB init
+initDbSchema().then(() => {
+  app.listen(PORT, '0.0.0.0', () => {
+    console.log(`Node.js Express backend server listening on http://0.0.0.0:${PORT}`);
+  });
 });
