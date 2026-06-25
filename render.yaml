@@ -2,8 +2,8 @@ services:
   # 1. Backend Web Service running Docker
   - type: web
     name: news-pulse-backend
-    env: docker
-    dockerFilePath: Dockerfile
+    runtime: docker
+    dockerfilePath: Dockerfile
     dockerContext: .
     plan: free # Free tier by default. Change to "starter" if you enable the persistent disk below.
     envVars:
