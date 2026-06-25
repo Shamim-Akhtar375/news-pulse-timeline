@@ -22,8 +22,9 @@ services:
     #   sizeGB: 1
 
   # 2. Frontend Static Site
-  - type: static
+  - type: web
     name: news-pulse-frontend
+    runtime: static
     rootDir: frontend
     buildCommand: npm run build
     staticPublishPath: ./dist
