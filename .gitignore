@@ -1,0 +1,27 @@
+# Dependency directories
+node_modules/
+venv/
+.venv/
+env/
+.env
+
+# SQLite database
+*.db
+*.db-journal
+*.db-shm
+*.db-wal
+
+# Build outputs
+dist/
+build/
+*.pyc
+__pycache__/
+
+# IDEs and editors
+.idea/
+.vscode/
+*.swp
+
+# OS files
+.DS_Store
+Thumbs.db
