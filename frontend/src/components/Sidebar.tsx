@@ -1,5 +1,5 @@
 import React from "react";
-import { Article, Cluster } from "./Timeline";
+import type { Article, Cluster } from "./Timeline";
 
 interface SidebarProps {
   article: Article | null;

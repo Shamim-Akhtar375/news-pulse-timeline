@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
-import { Timeline, Article, Cluster } from "./components/Timeline";
+import { Timeline } from "./components/Timeline";
+import type { Article, Cluster } from "./components/Timeline";
 import { Sidebar } from "./components/Sidebar";
 import { PipelineStatus } from "./components/PipelineStatus";
 

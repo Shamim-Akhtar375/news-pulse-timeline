@@ -11,7 +11,7 @@ import { fileURLToPath } from 'url';
 dotenv.config();
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const dbPath = path.resolve(__dirname, '../news_pulse.db');
+const dbPath = process.env.DATABASE_PATH || path.resolve(__dirname, '../news_pulse.db');
 const pythonScriptPath = path.resolve(__dirname, '../pipeline/run.py');
 
 const app = express();

@@ -1,0 +1,35 @@
+services:
+  # 1. Backend Web Service running Docker
+  - type: web
+    name: news-pulse-backend
+    env: docker
+    dockerFilePath: Dockerfile
+    dockerContext: .
+    plan: starter # Starter plan is required for disks. Change to "free" if you want the Free tier without persistence.
+    envVars:
+      - key: PORT
+        value: 8000
+      - key: DATABASE_PATH
+        value: /data/news_pulse.db
+      - key: DATABASE_URL
+        value: sqlite:////data/news_pulse.db
+      - key: SIMILARITY_THRESHOLD
+        value: 0.40
+    disk:
+      name: news-pulse-data
+      mountPath: /data
+      sizeGB: 1
+
+  # 2. Frontend Static Site
+  - type: web
+    name: news-pulse-frontend
+    env: static
+    buildCommand: npm run build
+    publishDir: dist
+    staticPublishPath: frontend
+    envVars:
+      - key: VITE_API_URL
+        fromService:
+          type: web
+          name: news-pulse-backend
+          property: host
