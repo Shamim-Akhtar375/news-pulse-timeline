@@ -107,7 +107,7 @@ function App() {
       // Search text filter
       if (debouncedSearch) {
         const query = debouncedSearch.toLowerCase();
-        const matchesLabel = cluster.label.toLowerCase().includes(query);
+        const matchesLabel = (cluster.label || cluster.title || "").toLowerCase().includes(query);
         const matchesKeyword = cluster.representative_keywords.some(k => k.toLowerCase().includes(query));
         const matchesArticle = cluster.article_associations.some(assoc => 
           assoc.article.title.toLowerCase().includes(query) ||
@@ -130,7 +130,7 @@ function App() {
       // Start Date Filter
       if (startDate) {
         const startTimestamp = new Date(startDate).getTime();
-        const clusterEndTimestamp = new Date(cluster.end_time).getTime();
+        const clusterEndTimestamp = cluster.end_time ? new Date(cluster.end_time).getTime() : 0;
         if (clusterEndTimestamp < startTimestamp) return false;
       }
 
@@ -138,7 +138,7 @@ function App() {
       if (endDate) {
         const end = new Date(endDate);
         end.setHours(23, 59, 59, 999);
-        const clusterStartTimestamp = new Date(cluster.start_time).getTime();
+        const clusterStartTimestamp = cluster.start_time ? new Date(cluster.start_time).getTime() : 0;
         if (clusterStartTimestamp > end.getTime()) return false;
       }
 
